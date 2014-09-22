@@ -17,12 +17,12 @@ module OmniAuth
       option :token_params, {parse: :json}
 
       uid do
-        raw_info['user_id']
+        raw_info['UserId']
       end
 
       info do
         {
-          user_id:     raw_info["user_id"]
+          user_id:     raw_info["UserId"]
         }
       end
 
@@ -37,10 +37,8 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= begin
-          access_token.options[:mode] = :query
-          @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code'], "agentid" => client.id}, parse: :json).parsed
-        end
+        access_token.options[:mode] = :query
+        @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code'], "agentid" => client.id}, parse: :json).parsed
       end
 
       protected
