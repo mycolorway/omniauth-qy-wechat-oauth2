@@ -6,13 +6,13 @@ module OmniAuth
       option :name, "qy_wechat"
 
       option :client_options, {
-        site:          "https://api.weixin.qq.com",
-        authorize_url: "https://open.weixin.qq.com/connect/qrconnect#wechat_redirect",
-        token_url:     "/sns/oauth2/access_token",
+        site:          "https://qyapi.weixin.qq.com",
+        authorize_url: "https://open.weixin.qq.com/connect/oauth2/authorize#wechat_redirect",
+        token_url:     "/cgi-bin/gettoken",
         token_method:  :get
       }
 
-      option :authorize_params, {scope: "snsapi_login"}
+      option :authorize_params, {scope: "snsapi_base"}
 
       option :token_params, {parse: :json}
 
@@ -46,10 +46,10 @@ module OmniAuth
         @uid ||= access_token["openid"]
         @raw_info ||= begin
           access_token.options[:mode] = :query
-          if access_token["scope"] && access_token["scope"].include?("snsapi_login")
-            @raw_info = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :json).parsed
+          if access_token["scope"] && access_token["scope"].include?("snsapi_base")
+            @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code'], "agentid" => client.id}, parse: :json).parsed
           else
-            @raw_info = {"openid" => @uid }
+            @raw_info = { }
           end
         end
       end
@@ -57,10 +57,8 @@ module OmniAuth
       protected
       def build_access_token
         params = {
-          'appid' => client.id, 
-          'secret' => client.secret,
-          'code' => request.params['code'],
-          'grant_type' => 'authorization_code' 
+          'corpid' => client.id, 
+          'corpsecret' => client.secret
           }.merge(token_params.to_hash(symbolize_keys: true))
         client.get_token(params, deep_symbolize(options.auth_token_params))
       end
