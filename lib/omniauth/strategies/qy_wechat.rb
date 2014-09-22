@@ -38,7 +38,7 @@ module OmniAuth
 
       def raw_info
         access_token.options[:mode] = :query
-        @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code'], "agentid" => client.id}, parse: :json).parsed
+        # @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code'], "agentid" => client.id}, parse: :json).parsed
       end
 
       protected
