@@ -16,8 +16,18 @@ module OmniAuth
 
       option :token_params, {parse: :json}
 
+      option :agentid
+
       uid do
         raw_info['UserId']
+      end
+
+      corpid do
+        client.id
+      end
+
+      agentid do
+        option.agentid
       end
 
       info do
