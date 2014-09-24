@@ -6,7 +6,7 @@ describe OmniAuth::Strategies::QyWechat do
   let(:client){OAuth2::Client.new('appid', 'secret')}
 
   subject do
-    OmniAuth::Strategies::OpenWechat.new(app, 'appid', 'secret', @options || {}).tap do |strategy|
+    OmniAuth::Strategies::QyWechat.new(app, 'appid', 'secret', { name: 'xxx', agentid: 'agentid' }).tap do |strategy|
       allow(strategy).to receive(:request) {
         request
       }
@@ -75,15 +75,21 @@ describe OmniAuth::Strategies::QyWechat do
     end
   end
 
-  describe "#build_access_token" do
-    specify "request includes'appid','secret','code','grant_type'and will parse response as json"do 
-      subject.stub(:client => client, :request=>double("request", params:{"code"=>"server_code"}))
-      client.should_receive(:get_token).with({
-        "appid" => "appid",
-        "secret" => "secret"
-        :parse => :json
-      },{})
-      subject.send(:build_access_token)
+  describe "#auth_hash" do
+
+    let(:request) { double('Request', \
+                           :params => { 'code' => 'code' }, \
+                           :cookies => {}, \
+                           :env => {}, \
+                           :scheme=>"http", \
+                           :url=>"localhost") }
+
+    specify "should has value" do
+      expect(subject.auth_hash[:corpid]).to eq subject.client.id
+      expect(subject.auth_hash[:code]).to eq request.params['code']
+      expect(subject.auth_hash[:agentid]).to eq subject.options.agentid
     end
+
   end
+
 end

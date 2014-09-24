@@ -1,2 +1,2 @@
-require 'omniauth-open-wechat-oauth2'
+require 'omniauth-qy-wechat-oauth2'
 require 'rspec'

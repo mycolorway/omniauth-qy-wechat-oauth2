@@ -16,24 +16,10 @@ module OmniAuth
 
       option :token_params, {parse: :json}
 
-      option :agentid
-
-      uid do
-        raw_info['UserId']
-      end
-
-      corpid do
-        client.id
-      end
-
-      agentid do
-        option.agentid
-      end
+      option :agentid, 'hahah'
 
       info do
-        {
-          user_id:     raw_info["UserId"]
-        }
+        { }
       end
 
       extra do
@@ -46,20 +32,24 @@ module OmniAuth
         redirect client.authorize_url(params)
       end
 
+      def auth_hash
+        hash = AuthHash.new(
+          provider: name,
+          code:     request.params['code'],
+          corpid:   client.id,
+          agentid:  options.agentid
+        )
+        hash
+      end
+
       def raw_info
-        @raw_info ||= begin
-          access_token.options[:mode] = :query
-          @raw_info = access_token.get("/cgi-bin/user/getuserinfo", :params => {"code" => request.params['code']}, parse: :json).parsed
-        end
+        { }
       end
 
       protected
+
       def build_access_token
-        params = {
-          'corpid' => client.id, 
-          'corpsecret' => client.secret
-          }.merge(token_params.to_hash(symbolize_keys: true))
-        client.get_token(params, deep_symbolize(options.auth_token_params))
+
       end
 
     end
