@@ -49,13 +49,16 @@ module OmniAuth
       protected
 
       def build_access_token
-        class AccessToken
-          def expired?
-            false
-          end
-        end.new
+        OmniAuth::Strategies::MockAccessToken.new
       end
 
     end
+
+    class MockAccessToken
+      def expired?
+        false
+      end
+    end
+
   end
 end
