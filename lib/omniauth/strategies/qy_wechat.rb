@@ -29,6 +29,8 @@ module OmniAuth
       def request_phase
         params = client.auth_code.authorize_params.merge(redirect_uri: callback_url).merge(authorize_params)
         params["appid"] = params.delete("client_id")
+        session['omniauth.corpid']  = params['appid']
+        session['omniauth.agentid'] = options.agentid
         redirect client.authorize_url(params)
       end
 
@@ -36,8 +38,8 @@ module OmniAuth
         hash = AuthHash.new(
           provider: name,
           code:     request.params['code'],
-          corpid:   client.id,
-          agentid:  options.agentid
+          corpid:   request.session.delete('omniauth.corpid'),
+          agentid:  request.session.delete('omniauth.agentid')
         )
         hash
       end

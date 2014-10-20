@@ -80,6 +80,10 @@ describe OmniAuth::Strategies::QyWechat do
     let(:request) { double('Request', \
                            :params => { 'code' => 'code' }, \
                            :cookies => {}, \
+                           :session => { 
+                             "omniauth.corpid" => subject.client.id,
+                             "omniauth.agentid" => subject.options.agentid
+                           }, \
                            :env => {}, \
                            :scheme=>"http", \
                            :url=>"localhost") }
