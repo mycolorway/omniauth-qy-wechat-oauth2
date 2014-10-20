@@ -89,9 +89,10 @@ describe OmniAuth::Strategies::QyWechat do
                            :url=>"localhost") }
 
     specify "should has value" do
-      expect(subject.auth_hash[:corpid]).to eq subject.client.id
-      expect(subject.auth_hash[:code]).to eq request.params['code']
-      expect(subject.auth_hash[:agentid]).to eq subject.options.agentid
+      auth_hash = subject.auth_hash
+      expect(auth_hash[:corpid]).to eq subject.client.id
+      expect(auth_hash[:code]).to eq request.params['code']
+      expect(auth_hash[:agentid]).to eq subject.options.agentid
     end
 
   end
