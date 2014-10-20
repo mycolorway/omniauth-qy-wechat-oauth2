@@ -49,7 +49,11 @@ module OmniAuth
       protected
 
       def build_access_token
-
+        class AccessToken
+          def expired?
+            false
+          end
+        end.new
       end
 
     end
