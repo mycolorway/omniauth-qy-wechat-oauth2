@@ -16,7 +16,9 @@ module OmniAuth
 
       option :token_params, {parse: :json}
 
-      option :agentid, 'hahah'
+      option :agentid, ''
+
+      option :tuid,    ''
 
       info do
         { }
@@ -29,19 +31,19 @@ module OmniAuth
       def request_phase
         params = client.auth_code.authorize_params.merge(redirect_uri: callback_url).merge(authorize_params)
         params["appid"] = params.delete("client_id")
-        session['omniauth.corpid']     = params['appid']
-        session['omniauth.corpsecret'] = options.client_secret
-        session['omniauth.agentid']    = options.agentid
+        session['omniauth.corpid']  = params['appid']
+        session['omniauth.tuid']    = options.tuid
+        session['omniauth.agentid'] = options.agentid
         redirect client.authorize_url(params)
       end
 
       def auth_hash
         hash = AuthHash.new(
-          provider:   name,
-          code:       request.params['code'],
-          corpid:     request.session.delete('omniauth.corpid'),
-          corpsecret: request.session.delete('omniauth.corpsecret'),
-          agentid:    request.session.delete('omniauth.agentid')
+          provider: name,
+          code:     request.params['code'],
+          corpid:   request.session.delete('omniauth.corpid'),
+          tuid:     request.session.delete('omniauth.tuid'),
+          agentid:  request.session.delete('omniauth.agentid')
         )
         hash
       end

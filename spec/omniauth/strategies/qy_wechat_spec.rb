@@ -6,7 +6,7 @@ describe OmniAuth::Strategies::QyWechat do
   let(:client){OAuth2::Client.new('appid', 'secret')}
 
   subject do
-    OmniAuth::Strategies::QyWechat.new(app, 'appid', 'secret', { name: 'xxx', agentid: 'agentid' }).tap do |strategy|
+    OmniAuth::Strategies::QyWechat.new(app, 'appid', 'secret', { name: 'xxx', agentid: 'agentid', tuid: 'tuid'}).tap do |strategy|
       allow(strategy).to receive(:request) {
         request
       }
@@ -81,8 +81,9 @@ describe OmniAuth::Strategies::QyWechat do
                            :params => { 'code' => 'code' }, \
                            :cookies => {}, \
                            :session => { 
-                             "omniauth.corpid" => subject.client.id,
-                             "omniauth.agentid" => subject.options.agentid
+                             "omniauth.corpid"  => subject.client.id,
+                             "omniauth.agentid" => subject.options.agentid,
+                             "omniauth.tuid"    => subject.options.tuid
                            }, \
                            :env => {}, \
                            :scheme=>"http", \
@@ -93,6 +94,7 @@ describe OmniAuth::Strategies::QyWechat do
       expect(auth_hash[:corpid]).to eq subject.client.id
       expect(auth_hash[:code]).to eq request.params['code']
       expect(auth_hash[:agentid]).to eq subject.options.agentid
+      expect(auth_hash[:tuid]).to eq subject.options.tuid
     end
 
   end
